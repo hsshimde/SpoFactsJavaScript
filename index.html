@@ -8,6 +8,10 @@
   gtag('js', new Date());
 
   gtag('config', 'G-243NHXWN6R');
+//   const express = require('express');
+// const cors = require('cors');
+// const app = express();
+// app.use(cors());
 </script>
 
 <head>
@@ -100,44 +104,186 @@
         </button>
       </a>
     </div>
-    <!-- <button class="api-btn" onclick="requestUserInfo()" style="visibility:hidden">사용자 정보 가져오기</button>
-    <button onclick="doAction()">click me</button> -->
+
+
     <div class="login">
-
-    <a id="token-result">
-
-    <button onclick="requestUserInfo()" class="kakao-login">
-      <img src="./images/kakaoLogIn.svg" alt="사용자 정보 가져오기">
-      <span>카카오 로그인</span>
-    </button>
-    </a>
+      <a id="token-result">
+        <button onclick="requestUserInfo()" class="kakao-login">
+          <img src="./images/kakaoLogIn.svg" alt="사용자 정보 가져오기">
+          <span>카카오 로그인</span>
+        </button>
+      </a>
     </div>
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.2.0/kakao.min.js"
-      integrity="sha384-x+WG2i7pOR+oWb6O5GV5f1KN2Ko6N7PTGPS7UlasYWNxZMKQA63Cj/B2lbUmUfuC"
-      crossorigin="anonymous"></script>
+  integrity="sha384-x+WG2i7pOR+oWb6O5GV5f1KN2Ko6N7PTGPS7UlasYWNxZMKQA63Cj/B2lbUmUfuC" crossorigin="anonymous"></script>
+
+    //<!-- <script src="js/Listen.js"></script> 
+    <!-- <script type="module" src="js/Listen.js"></script> -->
+
     <script>
       Kakao.init('cd2f5e533e16d7750c658ca10c763bac'); // 사용하려는 앱의 JavaScript 키 입력
       console.log(Kakao.isInitialized());
-    </script>
-
-    <script>
-      function loginWithKakao() 
-      {
-        Kakao.Auth.authorize
-        (
+      window.addEventListener('load', (event) => {
+        console.log('page is fully loaded');
+        let params = new URLSearchParams(window.location.search);
+        let bHasKey = params.has('code')
+        if (bHasKey) {
+          console.log('we got hash key lets send it')
+          let authCode = params.get('code')
+          // if(hasCode == true)
           {
-            redirectUri: 'https://spofacts.shop',
-            state: 'userme',
+            postHttpToServer(authCode)
+            .then((data) => console.log('send data success ' + data))
+            .catch((error) => console.log(error));
           }
-        );
+          // else
+          {
+            // alert('로그인 실패 !!!')
+          }
+         
+        }
+      }
+      )
 
-        // const userAction = async()=>
-        // {
-        //   const response = await fetch('https://kauth.kakao.com/oauth/authorize');
-        //   const myJson = await response.json();
-        // }
+      async function getHttpToServer(path)
+      {
+        const response = await fetch('http://localhost:443/${path})',
+          {
+            method: 'GET',
+          });
+        const data = await response.json();
+        console.log(data);
+      }
+
+      async function postHttpToServer(data)
+      {
+        fetch("http://localhost:443", {
+          method: "POST", //HTTP 요청 방법
+          body: JSON.stringify({
+            //전송할 데이터
+            data: data,
+
+          }),
+          headers: {
+            //헤더 값 정의
+            "content-type": "application/json; charset=UTF-8", //content-type 정의
+          },
+        })
+        .then(res=>
+        {
+          if (res.status == 200)
+           {
+          console.log('HTTP 200 OK');
+           }
+        else if (res.status == 403) 
+        {
+          return res.json();
+        } 
+        })
+      }
+
+      async function postAuthCodeToServer(AuthCode)
+      {
 
       }
+
+
+
+      function postAuthKey() {
+        const AccessKey = 'sdfsdfewrwrwer';
+        const ServerURL = '1.232.42.218'
+        console.log('what is the server URL');
+        console.log(ServerURL);
+
+        post(ServerURL, "posts", {
+          code: "${AccessKey}",
+        })
+          .then((data) => console.log('send data success ' + data))
+          .catch((error) => console.log(error));
+      }
+
+      // async function post(host, path, body, headers = {}) {
+      //   const url = `http://${host}/${path}`;
+      //   console.log(url)
+      //   const options = {
+      //     method: "Post",
+      //     headers: {
+      //       "Content-Type": "application/json; charset=UTF-8",
+      //       ...headers,
+      //     },
+      //     body: JSON.stringify(body),
+      //   };
+      //   const res = await fetch(url, options);
+      //   const data = await res.json();
+      //   if (res.ok) {
+      //     return data;
+      //   } else {
+      //     throw Error(data);
+      //   }
+      // }
+
+
+      
+
+
+
+      async function sendRequest(method, params) {
+        const response = await fetch('http://localhost:443/code',
+          {
+            method: 'GET',
+          });
+        const data = await response.json();
+        console.log(data);
+        
+
+
+        fetch("http://localhost:443", {
+          method: "POST", //HTTP 요청 방법
+          body: JSON.stringify({
+            //전송할 데이터
+            code: 'fuckinglunatic',
+
+          }),
+          headers: {
+            //헤더 값 정의
+            "content-type": "application/json; charset=UTF-8", //content-type 정의
+          },
+        })
+        .then(res=>
+        {
+          if (res.status == 200)
+           {
+          console.log('HTTP 200 OK');
+           }
+        else if (res.status == 403) 
+        {
+          return res.json();
+        } 
+        })
+      }
+      function loginWithKakao() 
+      {
+        // Kakao.Auth.authorize(
+        //   {
+        // redirectUri: 'http://192.168.35.135:5500',
+        //   }
+        //  );
+          requestSportsData();
+
+      }
+
+
+     async function requestSportsData(auth_code, original_url)
+     {
+      const response = await fetch('https://api.sportsdata.io/v4/soccer/scores/json/Competitions?key=6f22156317554441979fe928f66c0c0f',
+          {
+            method: 'GET',
+          });
+        const data = await response.json();
+        console.log(data);
+     }
+
+
 
       function logoutWithKakao() {
         if (Kakao.Auth.getAccessToken()) {
@@ -155,60 +301,42 @@
       }
 
       function requestUserInfo() {
-    Kakao.API.request({
-      url: '/v2/user/me',
-    })
-      .then(function(res) {
-        alert(JSON.stringify(res));
-      })
-      .catch(function(err) {
-        alert(
-          'failed to request user information: ' + JSON.stringify(err)
-        );
-      });
-  }
+        Kakao.API.request({
+          url: '/v2/user/me',
+        })
+          .then(function (res) {
+            alert(JSON.stringify(res));
+          })
+          .catch(function (err) {
+            alert(
+              'failed to request user information: ' + JSON.stringify(err)
+            );
+          });
+      }
+
 
       // 아래는 데모를 위한 UI 코드입니다.
-      displayToken()
-  function displayToken() 
-  {
-    var token = getCookie('authorize-access-token');
+      // displayToken()
 
-    if(token)
-     {
-      Kakao.Auth.setAccessToken(token);
-      document.querySelector('#token-result').innerText = 'login success, ready to request API';
-      document.querySelector('button.api-btn').style.visibility = 'visible';
-    }
-  }
 
-  function getCookie(name) 
-  {
-    var parts = document.cookie.split(name + '=');
-    if (parts.length === 2) { return parts[1].split(';')[0]; }
-  }
+      function displayToken() {
+        var token = getCookie('authorize-access-token');
 
-  $.ajax({
-  type : "POST"
-  , url : 'https://kauth.kakao.com/oauth/token'
-  , data : {
-      grant_type : 'authorization_code',
-      client_id : 'bdd7d4e68e757532da9cc5010f05ad0c',
-      redirect_uri : 'https://spofacts.shop',
-      code : kakaoCode
-  }
-  , contentType:'application/x-www-form-urlencoded;charset=utf-8'
-  , dataType: null
-  , success : function(response) {
-      Kakao.Auth.setAccessToken(response.access_token);
-      document.querySelector('button.api-btn').style.visibility = 'visible';
-  }
-  ,error : function(jqXHR, error) {
+        if (token) {
+          Kakao.Auth.setAccessToken(token);
+          document.querySelector('#token-result').innerText = 'login success, ready to request API';
+          document.querySelector('button.api-btn').style.visibility = 'visible';
+        }
+      }
 
-  }
-});
+      function getCookie(name) {
+        var parts = document.cookie.split(name + '=');
+        if (parts.length === 2) {
+          return parts[1].split(';')[0];
+        }
+      }
+
     </script>
-
 
 
 </body>
